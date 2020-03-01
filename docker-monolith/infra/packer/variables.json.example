@@ -1,0 +1,4 @@
+{
+    "var_project_id": "<your_project_id>",
+    "var_source_image_family": "ubuntu-1604-lts"
+}

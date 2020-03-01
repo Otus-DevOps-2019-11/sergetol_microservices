@@ -1,0 +1,39 @@
+{
+    "variables": {
+        "var_project_id": "",
+        "var_image_family": "docker-base",
+        "var_source_image_family": "",
+        "var_zone": "europe-north1-a",
+        "var_ssh_username": "appuser",
+        "var_machine_type": "g1-small",
+        "var_disk_size": "10",
+        "var_disk_type": "pd-ssd",
+        "var_image_description": "Docker base image",
+        "var_network": "default",
+        "var_on_host_maintenance": "MIGRATE"
+    },
+    "builders": [
+        {
+            "type": "googlecompute",
+            "project_id": "{{user `var_project_id`}}",
+            "image_name": "{{user `var_image_family`}}-{{timestamp}}",
+            "image_family": "{{user `var_image_family`}}",
+            "source_image_family": "{{user `var_source_image_family`}}",
+            "zone": "{{user `var_zone`}}",
+            "ssh_username": "{{user `var_ssh_username`}}",
+            "machine_type": "{{user `var_machine_type`}}",
+            "disk_size": "{{user `var_disk_size`}}",
+            "disk_type": "{{user `var_disk_type`}}",
+            "image_description": "{{user `var_image_description`}}",
+            "network": "{{user `var_network`}}",
+            "on_host_maintenance": "{{user `var_on_host_maintenance`}}"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "ansible",
+            "playbook_file": "ansible/playbooks/packer_docker.yml",
+            "user": "{{user `var_ssh_username`}}"
+        }
+    ]
+}
