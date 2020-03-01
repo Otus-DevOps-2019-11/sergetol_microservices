@@ -1,0 +1,10 @@
+project           = "<your_project_id>"
+deploy_user       = "appuser"
+public_key_path   = "~/.ssh/appuser.pub"
+private_key_path  = "~/.ssh/appuser"
+app_vm_count      = 1
+app_disk_image    = "docker-base"
+enable_provision  = false
+ssh_source_ranges = ["0.0.0.0/0"]
+env               = "test"
+image_to_run      = "<your-login>/otus-reddit:1.0"
