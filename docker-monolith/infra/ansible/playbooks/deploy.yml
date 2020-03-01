@@ -1,0 +1,26 @@
+---
+- name: Deploy App
+  hosts: app
+  become: true
+  tags: deploy
+
+  tasks:
+    - debug:
+        var: image_to_run
+
+    - name: Pull docker image
+      docker_image:
+        name: "{{ image_to_run }}"
+        source: pull
+        state: present
+      when: image_to_run is defined
+
+    - name: Create docker container
+      docker_container:
+        name: "{{ container_name | default('reddit') }}"
+        image: "{{ image_to_run }}"
+        detach: yes
+        published_ports:
+          - 9292:9292
+        state: started
+      when: image_to_run is defined

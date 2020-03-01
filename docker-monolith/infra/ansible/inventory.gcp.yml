@@ -1,0 +1,15 @@
+---
+plugin: gcp_compute
+auth_kind: serviceaccount
+service_account_file: ~/.gcp/gcp-service-account-2.json
+projects:
+  - docker-269213
+zones:
+  - europe-north1-a
+groups:
+  app: "'-app' in name"
+hostnames:
+  - name
+compose:
+  ansible_host: networkInterfaces[0].accessConfigs[0].natIP
+strict: true
