@@ -41,3 +41,35 @@ docker build -t reddit:latest .
 docker tag reddit:latest sergetol/otus-reddit:1.0
 docker push sergetol/otus-reddit:1.0
 ```
+
+- (*) подготовлены для тестирования собранного docker образа:
+
+  - terraform инфраструктура и скрипты провижининга (enable_provision = true); количество VM указывается в переменной app_vm_count
+```
+# выполнить в директории docker-monolith/infra/terraform/test
+terraform init
+terraform apply
+# для проверки зайти на http://app_external_ip:9292
+```
+
+  - ansible провижининг на terraform инфраструктуре (enable_provision = false); dynamic inventory сделан через плагин gcp_compute
+```
+# на предварительно поднятой terraform инфраструктуре выполнить в директории docker-monolith/infra/ansible
+ansible-playbook playbooks/site.yml
+# или, если в terraform используется предварительно собранный packer-образ docker-base, достаточно выполнить
+ansible-playbook playbooks/deploy.yml
+# для проверки зайти на http://app_external_ip:9292
+```
+
+  - packer сборка образа docker-base VM с установленным docker; провижининг выполняется с помощью ansible
+```
+# выполнить в директории docker-monolith/infra
+packer build -var-file=packer/variables.json packer/docker.json
+```
+
+  - vagrant инфраструктура на virtualbox; провижининг выполняется с помощью ansible
+```
+# выполнить в директории docker-monolith/infra/ansible
+vagrant up
+# для проверки зайти на http://10.10.10.20:9292
+```
