@@ -1,0 +1,13 @@
+REPOSITORY                           TAG                 IMAGE ID            CREATED              SIZE
+sergey_tolstinskiy/ubuntu-tmp-file   latest              e433a6e60975        About a minute ago   124MB
+ubuntu                               16.04               77be327e4b63        39 hours ago         124MB
+hello-world                          latest              fce289e99eb9        13 months ago        1.84kB
+
+
+Image это read-only snapshot изменений (в файловой системе), сделанных на основе другого (базового) image.
+Хранится в виде слоев, отражающих только отличия от предыдущего слоя.
+Image может быть получен из Dockerfile путем build или из существующего container путем commit как, опять же, read-only snapshot состояния (его файловой системы).
+
+Container это запущенный экземпляр какого-то image с пристроенным поверх еще одним слоем (файловой системы), который уже read-write.
+Но основе одного image может быть запущено много containers.
+Запущенный container будет обладать уже своим операционным окружением, например, сетевым и т.п.

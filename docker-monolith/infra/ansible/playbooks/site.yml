@@ -1,0 +1,13 @@
+---
+- import_playbook: base.yml
+
+- name: Debug info
+  hosts: all
+  tags: always
+
+  tasks:
+    - debug:
+        var: ansible_host
+
+- import_playbook: docker.yml
+- import_playbook: deploy.yml
