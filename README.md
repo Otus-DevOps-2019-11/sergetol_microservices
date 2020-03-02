@@ -4,6 +4,54 @@
 
 sergetol microservices repository
 
+# HW13
+
+- написаны Dockerfile для модулей приложения, освоена сборка docker-образов модулей
+
+```
+# для сборки в директории src выполнить
+docker build -t <your-login>/post:1.0 ./post-py
+docker build -t <your-login>/comment:1.0 ./comment
+docker build -t <your-login>/ui:1.0 ./ui
+```
+
+- освоен запуск контейнеров при помощи docker run, изучены различные опции запуска (*)
+
+```
+docker network create reddit
+docker run -d --network=reddit --network-alias=post_db --network-alias=comment_db mongo:latest
+docker run -d --network=reddit --network-alias=post <your-login>/post:1.0
+docker run -d --network=reddit --network-alias=comment <your-login>/comment:1.0
+docker run -d --network=reddit -p 9292:9292 <your-login>/ui:1.0
+```
+```
+docker kill $(docker ps -q)
+docker run -d --network=reddit --network-alias=post_db_new --network-alias=comment_db_new mongo:latest
+docker run -d --network=reddit --network-alias=post_new --env POST_DATABASE_HOST=post_db_new <your-login>/post:1.0
+docker run -d --network=reddit --network-alias=comment_new --env COMMENT_DATABASE_HOST=comment_db_new <your-login>/comment:1.0
+docker run -d --network=reddit -p 9292:9292 --env POST_SERVICE_HOST=post_new --env COMMENT_SERVICE_HOST=comment_new <your-login>/ui:1.0
+```
+
+- (*) получены навыки оптимизации docker-образов, использованы базовые образы на alpine для уменьшения размера конечных образов
+
+```
+# запуск линтера из директории src
+hadolint post-py/Dockerfile.2
+hadolint comment/Dockerfile.2
+hadolint ui/Dockerfile.3
+# для сборки оптимизированных образов в директории src выполнить
+docker build -f ./post-py/Dockerfile.2 -t <your-login>/post:2.0 ./post-py
+docker build -f ./comment/Dockerfile.2 -t <your-login>/comment:2.0 ./comment
+docker build -f ./ui/Dockerfile.3 -t <your-login>/ui:3.0 ./ui
+# запуск полученных образов
+docker kill $(docker ps -q)
+docker volume create reddit_db
+docker run -d --network=reddit --network-alias=post_db --network-alias=comment_db --volume reddit_db:/data/db mongo:latest
+docker run -d --network=reddit --network-alias=post <your-login>/post:2.0
+docker run -d --network=reddit --network-alias=comment <your-login>/comment:2.0
+docker run -d --network=reddit -p 9292:9292 <your-login>/ui:3.0
+```
+
 # HW12
 
 - установлены docker и docker-machine
