@@ -40,7 +40,7 @@ docker-compose up -d
   - через переменную окружения COMPOSE_PROJECT_NAME
   - через запуск docker-compose с флагом -p
 
-- создан override compose файл, в котором:
+- (*) создан override compose файл, в котором:
 
   - подключен volume с кодом приложения внутрь контейнера
   - puma запущена в debug режиме с двумя worker
