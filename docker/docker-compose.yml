@@ -64,6 +64,19 @@ services:
     networks:
       - front_net
 
+  mongodb-exporter:
+    image: mongodb-exporter:v0.10.0
+    command:
+      - '--collect.database'
+      - '--collect.collection'
+      - '--collect.topmetrics'
+      - '--collect.indexusage'
+      - '--collect.connpoolstats'
+      - '--mongodb.uri=mongodb://mongo_db:27017'
+    networks:
+      - back_net
+      - front_net
+
 volumes:
   mongo_db:
   prometheus_data:
