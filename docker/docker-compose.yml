@@ -82,6 +82,11 @@ services:
     networks:
       - front_net
 
+  cloudprober:
+    image: ${USER_NAME:-user}/cloudprober
+    networks:
+      - front_net
+
 volumes:
   mongo_db:
   prometheus_data:
