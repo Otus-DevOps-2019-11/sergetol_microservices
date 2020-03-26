@@ -51,7 +51,7 @@ services:
       - front_net
 
   node-exporter:
-    image: prom/node-exporter:v0.15.2
+    image: prom/node-exporter:${NODE_EXPORTER_VERSION:-v0.15.2}
     user: root
     volumes:
       - /proc:/host/proc:ro
@@ -65,7 +65,7 @@ services:
       - front_net
 
   mongodb-exporter:
-    image: mongodb-exporter:v0.10.0
+    image: ${USER_NAME:-user}/mongodb-exporter
     command:
       - '--collect.database'
       - '--collect.collection'
@@ -78,7 +78,7 @@ services:
       - front_net
 
   blackbox-exporter:
-    image: prom/blackbox-exporter:v0.16.0
+    image: prom/blackbox-exporter:${BLACKBOX_EXPORTER_VERSION:-v0.16.0}
     networks:
       - front_net
 
