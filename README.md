@@ -4,6 +4,33 @@
 
 sergetol microservices repository
 
+# HW16
+
+- запущены приложение reddit и Prometheus на docker-host в GCP
+- настроен мониторинг микросервисов
+- настроен сбор метрик хоста с использованием prom/node-exporter
+- (*) настроен мониторинг MongoDB с использованием mongodb-exporter (https://github.com/percona/mongodb_exporter)
+- (*) настроен мониторинг сервисов comment, post, ui с использованием prom/blackbox-exporter
+- (*) настроен мониторинг сервисов comment, post, ui с использованием cloudprober/cloudprober
+- (*) написан Makefile для сборки и публикации образов, а также для запуска всего через docker-compose
+
+ссылки на Docker Hub с собранными образами:
+https://hub.docker.com/repository/docker/sergetol/ui
+https://hub.docker.com/repository/docker/sergetol/post
+https://hub.docker.com/repository/docker/sergetol/comment
+https://hub.docker.com/repository/docker/sergetol/prometheus
+https://hub.docker.com/repository/docker/sergetol/mongodb-exporter
+https://hub.docker.com/repository/docker/sergetol/cloudprober
+
+```
+# поднять docker-host в GCP, открыть порты 9090 и 9292
+# переключить docker окружение на работу с docker-host
+
+# далее из корня репозитория выполнить
+make build --directory=./monitoring
+make up --directory=./monitoring
+```
+
 # HW15
 
 - подготовлена инсталляция Gitlab CI на docker-host в GCP
