@@ -1,0 +1,102 @@
+version: '3.3'
+
+services:
+  mongo_db:
+    image: mongo:${MONGO_VERSION:-3.2}
+    volumes:
+      - mongo_db:/data/db
+    networks:
+      back_net:
+        aliases:
+          - post_db
+          - comment_db
+
+  ui:
+    image: ${USER_NAME:-user}/ui
+    ports:
+      - ${UI_PUBLISHED_PORT:-9292}:9292/tcp
+    networks:
+      - front_net
+    depends_on:
+      - post
+      - comment
+
+  post:
+    image: ${USER_NAME:-user}/post
+    networks:
+      - back_net
+      - front_net
+    depends_on:
+      - mongo_db
+
+  comment:
+    image: ${USER_NAME:-user}/comment
+    networks:
+      - back_net
+      - front_net
+    depends_on:
+      - mongo_db
+
+  prometheus:
+    image: ${USER_NAME:-user}/prometheus
+    ports:
+      - ${PROMETHEUS_PUBLISHED_PORT:-9090}:9090/tcp
+    volumes:
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=1d'
+    networks:
+      - front_net
+
+  node-exporter:
+    image: prom/node-exporter:${NODE_EXPORTER_VERSION:-v0.15.2}
+    user: root
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+    networks:
+      - front_net
+
+  mongodb-exporter:
+    image: ${USER_NAME:-user}/mongodb-exporter
+    command:
+      - '--collect.database'
+      - '--collect.collection'
+      - '--collect.topmetrics'
+      - '--collect.indexusage'
+      - '--collect.connpoolstats'
+      - '--mongodb.uri=mongodb://mongo_db:27017'
+    networks:
+      - back_net
+      - front_net
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter:${BLACKBOX_EXPORTER_VERSION:-v0.16.0}
+    networks:
+      - front_net
+
+  cloudprober:
+    image: ${USER_NAME:-user}/cloudprober
+    networks:
+      - front_net
+
+volumes:
+  mongo_db:
+  prometheus_data:
+
+networks:
+  back_net:
+    ipam:
+      config:
+        - subnet: ${BACK_SUBNET:-10.0.2.0/24}
+  front_net:
+    ipam:
+      config:
+        - subnet: ${FRONT_SUBNET:-10.0.1.0/24}

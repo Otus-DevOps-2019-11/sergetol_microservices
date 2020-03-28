@@ -3,7 +3,7 @@ FROM ruby:2.4.2-alpine
 WORKDIR /app
 COPY . ./
 
-RUN apk --no-cache --update add build-base && \
+RUN apk --no-cache --update add build-base=0.4-r1 && \
     bundle install && \
     apk del build-base
 
