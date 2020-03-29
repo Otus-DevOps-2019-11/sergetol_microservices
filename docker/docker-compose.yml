@@ -37,59 +37,8 @@ services:
     depends_on:
       - mongo_db
 
-  prometheus:
-    image: ${USER_NAME:-user}/prometheus
-    ports:
-      - ${PROMETHEUS_PUBLISHED_PORT:-9090}:9090/tcp
-    volumes:
-      - prometheus_data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention=1d'
-    networks:
-      - front_net
-
-  node-exporter:
-    image: prom/node-exporter:${NODE_EXPORTER_VERSION:-v0.15.2}
-    user: root
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
-    networks:
-      - front_net
-
-  mongodb-exporter:
-    image: ${USER_NAME:-user}/mongodb-exporter
-    command:
-      - '--collect.database'
-      - '--collect.collection'
-      - '--collect.topmetrics'
-      - '--collect.indexusage'
-      - '--collect.connpoolstats'
-      - '--mongodb.uri=mongodb://mongo_db:27017'
-    networks:
-      - back_net
-      - front_net
-
-  blackbox-exporter:
-    image: prom/blackbox-exporter:${BLACKBOX_EXPORTER_VERSION:-v0.16.0}
-    networks:
-      - front_net
-
-  cloudprober:
-    image: ${USER_NAME:-user}/cloudprober
-    networks:
-      - front_net
-
 volumes:
   mongo_db:
-  prometheus_data:
 
 networks:
   back_net:
