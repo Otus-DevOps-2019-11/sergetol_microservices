@@ -86,6 +86,13 @@ services:
     networks:
       - front_net
 
+  telegraf:
+    image: ${USER_NAME:-user}/telegraf
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - front_net
+
 volumes:
   prometheus_data:
   grafana_data:

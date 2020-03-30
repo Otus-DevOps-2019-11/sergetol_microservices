@@ -1,5 +1,5 @@
 APP_IMAGES := ui post comment
-MON_IMAGES := prometheus mongodb-exporter cloudprober alertmanager
+MON_IMAGES := prometheus mongodb-exporter cloudprober alertmanager telegraf
 DOCKER_COMMANDS := build push
 COMPOSE_COMMANDS := config up down
 COMPOSE_COMMANDS_MON := configmon upmon downmon
