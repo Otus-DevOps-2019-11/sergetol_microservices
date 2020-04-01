@@ -79,8 +79,11 @@ services:
 
   alertmanager:
     image: ${USER_NAME:-user}/alertmanager
+    volumes:
+      - alertmanager_data:/alertmanager
     command:
       - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
     ports:
       - ${ALERTMANAGER_PUBLISHED_PORT:-9093}:9093
     networks:
@@ -96,6 +99,7 @@ services:
 volumes:
   prometheus_data:
   grafana_data:
+  alertmanager_data:
 
 networks:
   back_net:
