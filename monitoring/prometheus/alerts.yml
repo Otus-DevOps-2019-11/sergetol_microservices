@@ -8,4 +8,20 @@ groups:
           severity: page
         annotations:
           description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute'
-          summary: 'Instance {{ $labels.instance }} down'
+          summary: '[{{ $labels.job }}] Instance {{ $labels.instance }} down'
+      - alert: MemoryUsage500MBexceed
+        expr: container_memory_usage_bytes{container_label_com_docker_compose_project!=""} > 524288000  # 500 MB
+        for: 10s
+        labels:
+          severity: page
+        annotations:
+          description: 'Container {{ $labels.name }} uses {{ $value | humanize1024 }}B memory'
+          summary: '[{{ $labels.job }}] Container {{ $labels.name }} is using more than 500 MB memory'
+      - alert: uiHTTPresponseTime95thPercentileExceeds300ms
+        expr: histogram_quantile(0.95, sum(rate(ui_request_response_time_bucket[5m])) by (le)) > 0.3
+        for: 1m
+        labels:
+          severity: page
+        annotations:
+          description: 'UI HTTP response time (95th persentile) is {{ with query "histogram_quantile(0.95, sum(rate(ui_request_response_time_bucket[5m])) by (le))" }}{{ . | first | value }}{{ end }}s'
+          summary: 'UI HTTP response time (95th persentile) is more than 300 ms'
