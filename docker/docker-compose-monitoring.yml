@@ -64,7 +64,7 @@ services:
       - front_net
 
   grafana:
-    image: grafana/grafana:${GRAFANA_VERSION:-5.0.0}
+    image: ${USER_NAME:-user}/grafana
     volumes:
       - grafana_data:/var/lib/grafana
     environment:
