@@ -4,6 +4,46 @@
 
 sergetol microservices repository
 
+# HW17
+
+- настроен мониторинг docker контейнеров с помощью cAdvisor
+- изучена визуализация метрик с помощью Grafana
+- сделаны дашборды для визуализации метрик работы приложения и бизнес-метрик
+- настроены и проверены правила алертинга через Alertmanager в канал Slack (https://app.slack.com/client/T6HR0TUP3/CRLAM23A6)
+- (*) доработан Makefile для работы со всеми новыми сервисами
+- (*) настроен сбор метрик в экспериментальном режиме с самого Docker и создан дашборд (Experimental_Docker_daemon_Monitoring.json)
+- (*) настроен сбор метрик с Docker с помощью Telegraf и создан дашборд (Telegraf_Docker_Monitoring.json)
+- (*) добавлены еще правила алертов и настроен алертинг через Alertmanager по email
+- (**) реализовано автоматическое добавление в Grafana источника данных (Prometheus) и всех созданных дашбордов
+
+ссылки на Docker Hub с новыми собранными образами:
+https://hub.docker.com/repository/docker/sergetol/prometheus
+https://hub.docker.com/repository/docker/sergetol/grafana
+https://hub.docker.com/repository/docker/sergetol/alertmanager
+https://hub.docker.com/repository/docker/sergetol/telegraf
+
+```
+# поднять docker-host в GCP, открыть порты 9090 (Prometheus), 9292 (reddit app), 8080 (cAdvisor), 3000 (Grafana), 9093 (Alertmanager)
+# переключить docker окружение на работу с docker-host
+
+# далее из корня репозитория выполнить
+make build --directory=./monitoring
+make up --directory=./monitoring
+make upmon --directory=./monitoring
+```
+```
+# включение экспериментальных метрик на docker
+# подключиться к docker-host
+docker-machine ssh docker-host
+# создать (добавить в) файл /etc/docker/daemon.json
+{
+  "metrics-addr" : "0.0.0.0:9323",
+  "experimental" : true
+}
+# перезапустить docker
+sudo systemctl restart docker
+```
+
 # HW16
 
 - запущены приложение reddit и Prometheus на docker-host в GCP
