@@ -20,6 +20,11 @@ services:
     depends_on:
       - post
       - comment
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:${FLUENTD_PUBLISHED_PORT:-24224}
+        tag: service.ui
 
   post:
     image: ${USER_NAME:-user}/post:${APP_TAG:-latest}
