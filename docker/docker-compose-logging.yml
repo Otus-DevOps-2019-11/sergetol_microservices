@@ -6,6 +6,8 @@ services:
     ports:
       - ${FLUENTD_PUBLISHED_PORT:-24224}:24224/tcp
       - ${FLUENTD_PUBLISHED_PORT:-24224}:24224/udp
+    depends_on:
+      - elasticsearch
     networks:
       - front_net
 
@@ -13,6 +15,8 @@ services:
     image: elasticsearch:${ELASTICSEARCH_VERSION:-7.4.0}
     environment:
       - 'discovery.type=single-node'
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
     expose:
       - 9200
     ports:
@@ -26,6 +30,9 @@ services:
       - ${KIBANA_PUBLISHED_PORT:-5601}:5601/tcp
     networks:
       - front_net
+
+volumes:
+  elasticsearch_data:
 
 networks:
   front_net:
