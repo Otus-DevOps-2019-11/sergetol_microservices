@@ -13,6 +13,8 @@ services:
 
   ui:
     image: ${USER_NAME:-user}/ui:${APP_TAG:-latest}
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED:-false}
     ports:
       - ${UI_PUBLISHED_PORT:-9292}:9292/tcp
     networks:
@@ -28,6 +30,8 @@ services:
 
   post:
     image: ${USER_NAME:-user}/post:${APP_TAG:-latest}
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED:-false}
     networks:
       - back_net
       - front_net
@@ -41,6 +45,8 @@ services:
 
   comment:
     image: ${USER_NAME:-user}/comment:${APP_TAG:-latest}
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED:-false}
     networks:
       - back_net
       - front_net

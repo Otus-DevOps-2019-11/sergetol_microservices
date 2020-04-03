@@ -31,6 +31,13 @@ services:
     networks:
       - front_net
 
+  zipkin:
+    image: openzipkin/zipkin:${ZIPKIN_VERSION:-2.21}
+    ports:
+      - ${ZIPKIN_PUBLISHED_PORT:-9411}:9411/tcp
+    networks:
+      - front_net
+
 volumes:
   elasticsearch_data:
 
