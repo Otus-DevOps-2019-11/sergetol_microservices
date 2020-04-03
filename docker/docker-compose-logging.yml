@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  fluentd:
+    image: ${USER_NAME:-user}/fluentd
+    ports:
+      - ${FLUENTD_PUBLISHED_PORT:-24224}:24224/tcp
+      - ${FLUENTD_PUBLISHED_PORT:-24224}:24224/udp
+    networks:
+      - front_net
+
+  elasticsearch:
+    image: elasticsearch:${ELASTICSEARCH_VERSION:-7.4.0}
+    environment:
+      - 'discovery.type=single-node'
+    expose:
+      - 9200
+    ports:
+      - ${ELASTICSEARCH_PUBLISHED_PORT:-9200}:9200/tcp
+    networks:
+      - front_net
+
+  kibana:
+    image: kibana:${KIBANA_VERSION:-7.4.0}
+    ports:
+      - ${KIBANA_PUBLISHED_PORT:-5601}:5601/tcp
+    networks:
+      - front_net
+
+networks:
+  front_net:
+    ipam:
+      config:
+        - subnet: ${FRONT_SUBNET:-10.0.1.0/24}

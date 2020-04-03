@@ -12,7 +12,7 @@ services:
           - comment_db
 
   ui:
-    image: ${USER_NAME:-user}/ui
+    image: ${USER_NAME:-user}/ui:${APP_TAG:-latest}
     ports:
       - ${UI_PUBLISHED_PORT:-9292}:9292/tcp
     networks:
@@ -22,15 +22,20 @@ services:
       - comment
 
   post:
-    image: ${USER_NAME:-user}/post
+    image: ${USER_NAME:-user}/post:${APP_TAG:-latest}
     networks:
       - back_net
       - front_net
     depends_on:
       - mongo_db
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:${FLUENTD_PUBLISHED_PORT:-24224}
+        tag: service.post
 
   comment:
-    image: ${USER_NAME:-user}/comment
+    image: ${USER_NAME:-user}/comment:${APP_TAG:-latest}
     networks:
       - back_net
       - front_net
