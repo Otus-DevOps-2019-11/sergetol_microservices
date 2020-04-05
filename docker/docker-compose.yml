@@ -52,6 +52,11 @@ services:
       - front_net
     depends_on:
       - mongo_db
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:${FLUENTD_PUBLISHED_PORT:-24224}
+        tag: service.comment
 
 volumes:
   mongo_db:
