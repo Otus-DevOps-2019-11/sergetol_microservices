@@ -12,7 +12,9 @@ services:
           - comment_db
 
   ui:
-    image: ${USER_NAME:-user}/ui
+    image: ${USER_NAME:-user}/ui:${APP_TAG:-latest}
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED:-false}
     ports:
       - ${UI_PUBLISHED_PORT:-9292}:9292/tcp
     networks:
@@ -20,22 +22,41 @@ services:
     depends_on:
       - post
       - comment
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:${FLUENTD_PUBLISHED_PORT:-24224}
+        tag: service.ui
 
   post:
-    image: ${USER_NAME:-user}/post
+    image: ${USER_NAME:-user}/post:${APP_TAG:-latest}
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED:-false}
     networks:
       - back_net
       - front_net
     depends_on:
       - mongo_db
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:${FLUENTD_PUBLISHED_PORT:-24224}
+        tag: service.post
 
   comment:
-    image: ${USER_NAME:-user}/comment
+    image: ${USER_NAME:-user}/comment:${APP_TAG:-latest}
+    environment:
+      - ZIPKIN_ENABLED=${ZIPKIN_ENABLED:-false}
     networks:
       - back_net
       - front_net
     depends_on:
       - mongo_db
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:${FLUENTD_PUBLISHED_PORT:-24224}
+        tag: service.comment
 
 volumes:
   mongo_db:
