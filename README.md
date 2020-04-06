@@ -4,6 +4,43 @@
 
 sergetol microservices repository
 
+# HW18
+
+- установлен и настроен стек EFK
+- во Fluentd задействованы плагины fluent-plugin-elasticsearch и fluent-plugin-grok-parser
+- рассмотрен сбор через fluentd docker драйвер структурированных логов (json) на примере сервиса post
+- настроен фильтр парсинга во Fluentd приходящих json-логов от сервиса post
+- рассмотрен сбор через fluentd docker драйвер неструктурированных логов на примере сервиса ui
+- настроен фильтр во Fluentd парсинга логов ((*) двух форматов) сервиса ui с помощью grok-шаблонов
+- добавлен сервис распределенного трейсинга Zipkin
+- (*) при работе со "сломанным" приложением с помощью Zipkin удалось понять, что задержка при открытии любого поста происходит в сервисе post при обработке запроса /post/-id-;<br/>далее по коду сервиса post в find_post был найден вызов time.sleep(3), что и было причиной задержки
+- добавлен Makefile для сборки и публикации образов, а также для запуска всего через docker-compose
+- для логов сервиса ui настроен также парсинг json-данных поля params
+- настроен также сбор через fluentd docker драйвер неструктурированных логов сервиса comment
+- с помощью плагина fluent-plugin-concat настроена склейка многострочных логов сервиса comment, а затем выполнен парсинг аналогично логам сервиса ui
+
+ссылки на Docker Hub с новыми собранными образами:
+https://hub.docker.com/repository/docker/sergetol/ui
+https://hub.docker.com/repository/docker/sergetol/post
+https://hub.docker.com/repository/docker/sergetol/comment
+https://hub.docker.com/repository/docker/sergetol/fluentd
+
+```
+# поднять docker-host в GCP, открыть порты 9292 (reddit app), 5601 (Kibana), 9411 (Zipkin)
+# переключить docker окружение на работу с docker-host
+
+# далее из корня репозитория выполнить
+make build --directory=./logging
+make uplog --directory=./logging
+make up --directory=./logging
+```
+```
+# Kibana
+http://docker-host_ip:5601
+# в Index Patterns -> Create index pattern, Index pattern = fluentd-*, Time Filter field name = @timestamp
+# далее Discover и можно смотреть полученные логи
+```
+
 # HW17
 
 - настроен мониторинг docker контейнеров с помощью cAdvisor
