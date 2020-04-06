@@ -1,3 +1,3 @@
-FROM prom/prometheus:v2.16.0
+FROM prom/prometheus:v2.17.1
 
-COPY prometheus.yml /etc/prometheus/
+COPY prometheus.yml alerts.yml /etc/prometheus/
