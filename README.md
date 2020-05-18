@@ -4,6 +4,27 @@
 
 sergetol microservices repository
 
+# HW19
+
+- развернуты вручную компоненты Kubernetes v1.18.2, используя The Hard Way (https://github.com/kelseyhightower/kubernetes-the-hard-way)
+- созданы деплойменты для компонентов ui, post, mongo, comment; проверено, что поды запускаются
+
+- задание со *: Описать установку компонентов Kubernetes из THW в виде Ansible-плейбуков в папке kubernetes/ansible - НЕ СДЕЛАНО (нехватка времени)
+
+```
+kubectl apply -f kubernetes/reddit
+
+kubectl get deployments
+kubectl get pods
+
+kubectl logs $(kubectl get pods -l app=comment -o jsonpath="{.items[0].metadata.name}")
+kubectl logs $(kubectl get pods -l app=mongo -o jsonpath="{.items[0].metadata.name}")
+kubectl logs $(kubectl get pods -l app=post -o jsonpath="{.items[0].metadata.name}")
+kubectl logs $(kubectl get pods -l app=ui -o jsonpath="{.items[0].metadata.name}")
+
+kubectl delete -f kubernetes/reddit
+```
+
 # HW18
 
 - установлен и настроен стек EFK

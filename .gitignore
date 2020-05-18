@@ -8,3 +8,5 @@ variables.json
 .vagrant/
 *.log
 *.env
+*.csr
+*.pem
