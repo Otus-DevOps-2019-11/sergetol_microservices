@@ -6,6 +6,7 @@ stages:
   - test
   - review
   - release
+  - trigger_deploy
   - cleanup
 
 build:
@@ -80,6 +81,19 @@ release:
     - docker pull "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
     - docker tag "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" "$CI_APPLICATION_REPOSITORY:$(cat VERSION)"
     - docker push "$CI_APPLICATION_REPOSITORY:$(cat VERSION)"
+
+trigger_deploy:
+  stage: trigger_deploy
+  only:
+    - master
+  before_script:
+    - apk add -U curl
+  script:
+    - >
+      curl --request POST \
+           --form token=$REDDIT_DEPLOY_TRIGGER_TOKEN \
+           --form ref=master \
+           http://gitlab-gitlab/api/v4/projects/$REDDIT_DEPLOY_PROJECT_ID/trigger/pipeline
 
 review:
   stage: review
