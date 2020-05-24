@@ -9,7 +9,10 @@ spec:
   rules:
     - http:
         paths:
-          - path: /*
+          - path: /
             backend:
               serviceName: {{ template "ui.fullname" . }}
               servicePort: {{ .Values.service.externalPort }}
+{{- if eq .Values.ingress.class "nginx" }}
+      host: {{ .Values.ingress.host | default .Release.Name }}
+{{- end }}

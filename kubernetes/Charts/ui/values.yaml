@@ -8,7 +8,7 @@ image:
   tag: logging
 
 ingress:
-  class: gce
+  class: nginx
 
 postHost:
 postPort:
