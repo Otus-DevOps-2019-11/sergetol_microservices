@@ -594,7 +594,7 @@ pushgateway:
 alertmanagerFiles:
   alertmanager.yml:
     global:
-      slack_api_url: 'https://hooks.slack.com/services/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'
+      slack_api_url: 'https://hooks.slack.com/services/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'
 
     receivers:
       - name: default-receiver
