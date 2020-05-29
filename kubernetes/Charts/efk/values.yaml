@@ -1,0 +1,13 @@
+---
+kibana:
+#  env:
+#    ELASTICSEARCH_URL: http://elasticsearch-logging:9200
+  files:
+    kibana.yml:
+      elasticsearch.url: http://elasticsearch-logging:9200
+  service:
+    type: NodePort
+  ingress:
+    enabled: true
+    hosts:
+      - reddit-kibana

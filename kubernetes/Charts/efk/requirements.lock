@@ -1,0 +1,6 @@
+dependencies:
+- name: kibana
+  repository: file://../kibana
+  version: 0.12.1
+digest: sha256:b337946b6c565da4246ba21e5049e94c2620c8e34a28095eebfc800498d2eddb
+generated: "2020-05-25T22:56:15.847998421+03:00"

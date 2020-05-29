@@ -1,0 +1,5 @@
+---
+dependencies:
+  - name: kibana
+    version: 0.12.1
+    repository: "file://../kibana"

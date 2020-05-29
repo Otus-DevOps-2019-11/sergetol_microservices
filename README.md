@@ -4,6 +4,84 @@
 
 sergetol microservices repository
 
+# HW23
+
+- развернут Prometheus и Grafana в k8s
+- параметризованы дашборды визуализации метрик работы приложения и бизнес-метрик для работы с несколькими namespace
+- (*) запущен Alertmanager в k8s, настроены и проверены правила алертинга по email и в канал Slack (https://app.slack.com/client/T6HR0TUP3/CRLAM23A6)
+- развернут EFK стек в k8s
+- (*) создан helm чарт для развертывания EFK стека в k8s
+
+```
+cd ./kubernetes/terraform && terraform init && terraform apply -auto-approve && cd -
+
+gcloud container clusters get-credentials <cluster_name>
+
+# helm3 repo add stable https://kubernetes-charts.storage.googleapis.com
+# helm3 repo update
+
+helm3 install nginx stable/nginx-ingress
+# watch the status with:
+kubectl get svc -w nginx-nginx-ingress-controller
+# then:
+echo "$(kubectl get svc nginx-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}') reddit-test staging production reddit-prometheus reddit-grafana reddit-alertmanager reddit-kibana" >> /etc/hosts
+
+helm3 upgrade reddit-test ./kubernetes/Charts/reddit --install
+# http://reddit-test
+
+kubectl create ns staging
+helm3 upgrade staging --namespace staging ./kubernetes/Charts/reddit --install
+# http://staging
+
+kubectl create ns production
+helm3 upgrade production --namespace production ./kubernetes/Charts/reddit --install
+# http://production
+
+helm3 upgrade prometheus ./kubernetes/Charts/prometheus -f ./kubernetes/Charts/prometheus/custom_values.yml --install
+# http://reddit-prometheus
+
+helm3 upgrade grafana stable/grafana --install \
+  --set "adminPassword=admin" \
+  --set "service.type=NodePort" \
+  --set "ingress.enabled=true" \
+  --set "ingress.hosts={reddit-grafana}"
+# http://reddit-grafana
+# admin / admin
+# добавить Prometheus data-source: http://prometheus-prometheus-server
+# импортировать dashboard: https://grafana.com/grafana/dashboards/315 и https://grafana.com/grafana/dashboards/741
+# импортировать дашборды Business_Logic_Monitoring.json и UI_Service_Monitoring.json из kubernetes/Charts/grafana_dashboards/
+
+# http://reddit-alertmanager
+# для проверки алертинга выполнить:
+kubectl scale deployment --replicas 0 -n production production-mongodb
+# проверить, что алертинг сработал по всем настроенным каналам
+# вернуть обратно:
+kubectl scale deployment --replicas 1 -n production production-mongodb
+
+helm3 upgrade efk ./kubernetes/Charts/efk --install
+# http://reddit-kibana
+# в Index Patterns -> Create index pattern, Index pattern = fluentd-*, Time Filter field name = @timestamp
+# далее Discover и можно смотреть полученные логи
+
+# helm3 ls
+# helm3 ls --namespace=staging
+# helm3 ls --namespace=production
+
+#-----
+helm3 uninstall efk
+helm3 uninstall grafana
+helm3 uninstall prometheus
+helm3 uninstall reddit-test
+helm3 uninstall staging --namespace staging
+helm3 uninstall production --namespace production
+helm3 uninstall nginx
+
+kubectl delete ns staging
+kubectl delete ns production
+
+cd ./kubernetes/terraform && terraform destroy -auto-approve && cd -
+```
+
 # HW22
 
 - изучена работа с helm2, helm2 tiller plugin, helm3
